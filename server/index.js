@@ -1,8 +1,10 @@
 require('dotenv').config();
+import React from 'react';
+import { HashRouter, Route } from 'react-router-dom';
 const express = require('express'),
 const massive = require('massive');
-      userCtrl = require('./controllers/user'),
-      postCtrl = require('./controllers/posts')
+userCtrl = require('./controllers/user'),
+postCtrl = require('./controllers/posts')
 const session = require ('express-session');
 
 const {CONNECTION_STRING, SESSION_SECRET} = process.env 
@@ -34,3 +36,14 @@ massive({
   });
 
 app.listen(PORT, _ => console.log(`running on ${PORT}`));
+
+
+const App = () => (
+    <React.StrictMode >
+    <HashRouter>
+      <div className="app">
+        <Route exact path="/" component={Landing} />
+      </div>
+    </HashRouter>
+    </React.StrictMode>
+  );
