@@ -1,10 +1,15 @@
 require('dotenv').config();
 const express = require('express'),
+const massive = require('massive');
       userCtrl = require('./controllers/user'),
       postCtrl = require('./controllers/posts')
+const session = require ('express-session');
 
+const {CONNECTION_STRING, SESSION_SECRET} = process.env 
 
+app.use(session({resave: true, saveUninitialized: false, secret: SESSION_SECRET}))
 const app = express();
+const PORT = 4747
 
 app.use(express.json());
 
@@ -20,4 +25,12 @@ app.post('/api/post', postCtrl.createPost);
 app.get('/api/post/:id', postCtrl.readPost);
 app.delete('/api/post/:id', postCtrl.deletePost)
 
-app.listen(4000, _ => console.log(`running on ${4000}`));
+massive({
+    connectionString: CONNECTION_STRING,
+    ssl: { rejectUnauthorized: false }
+  }).then(db => {
+    app.set('db', db);
+    console.log('db connected');
+  });
+
+app.listen(PORT, _ => console.log(`running on ${PORT}`));
